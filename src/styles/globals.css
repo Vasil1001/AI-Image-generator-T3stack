@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 body {
-  @apply bg-[#f2f2f2] dark:bg-[#212121] text-[#f2f2f2]
+  @apply bg-[#f2f2f2] dark:bg-[#161b22] text-[#f2f2f2]
 }

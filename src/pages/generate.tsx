@@ -1,8 +1,10 @@
 import { type NextPage } from 'next'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useState } from 'react'
+import { Button } from '~/components/Button'
 import { FormGroup } from '~/components/FormGroup'
-import { Input } from '~/components/input'
+import { Input } from '~/components/Input'
 import { api } from '~/utils/api'
 
 const GeneratePage: NextPage = () => {
@@ -30,6 +32,10 @@ const GeneratePage: NextPage = () => {
       setForm((prev) => ({ ...prev, [key]: e.target.value }))
     }
   }
+
+  const session = useSession()
+  const isLoggedIn = !!session.data
+
   return (
     <>
       <Head>
@@ -38,13 +44,35 @@ const GeneratePage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
+        {!isLoggedIn && (
+          <Button
+            onClick={() => {
+              signIn().catch(console.error)
+            }}
+          >
+            Login
+          </Button>
+        )}
+
+        {isLoggedIn && (
+          <Button
+            onClick={() => {
+              signOut().catch(console.error)
+            }}
+          >
+            Logout
+          </Button>
+        )}
+
+        {session.data?.user.name}
+        
         <form className="flex flex-col gap-4" action="" onSubmit={handleFormSubmit}>
           <FormGroup>
             <label htmlFor="Prompt">Type a prompt to generate image </label>
             <Input value={form.prompt} onChange={updateForm('prompt')}></Input>
           </FormGroup>
 
-          <button className="rounded-md bg-blue-500 px-4 py-2 hover:bg-blue-600">Generate </button>
+          <Button>Generate </Button>
         </form>
       </main>
     </>
