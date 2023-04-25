@@ -10,18 +10,22 @@ import { api } from '~/utils/api'
 const GeneratePage: NextPage = () => {
   //   const hello = api.example.hello.useQuery({ text: 'from tRPC' })
   const [form, setForm] = useState({
-    prompt: '',
+    prompt: "",
   })
+
+  const [imageUrl, setImageUrl] = useState('')
 
   const generateIcon = api.generate.generateIcon.useMutation({
     onSuccess(data) {
-      console.log('first', data)
+      console.log('Mutation finished', data.imageUrl)
+      if (!data.imageUrl) return
+      setImageUrl(data.imageUrl)
     },
   })
 
   function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // TODO: submit the form data to the backend
+    // ? submit the form data to the backend
     generateIcon.mutate({
       prompt: form.prompt,
     })
@@ -65,7 +69,7 @@ const GeneratePage: NextPage = () => {
         )}
 
         {session.data?.user.name}
-        
+
         <form className="flex flex-col gap-4" action="" onSubmit={handleFormSubmit}>
           <FormGroup>
             <label htmlFor="Prompt">Type a prompt to generate image </label>
@@ -74,6 +78,8 @@ const GeneratePage: NextPage = () => {
 
           <Button>Generate </Button>
         </form>
+
+        <img src={imageUrl} alt="" />
       </main>
     </>
   )
